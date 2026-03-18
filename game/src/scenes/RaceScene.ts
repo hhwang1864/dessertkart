@@ -28,6 +28,7 @@ export class RaceScene extends Phaser.Scene {
   private hudLap!: Phaser.GameObjects.Text
   private countdownText!: Phaser.GameObjects.Text
   private playerFrozen = true
+  private raceEnded = false
 
   constructor() {
     super({ key: 'RaceScene' })
@@ -107,9 +108,12 @@ export class RaceScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number) {
-    // AI always moves; player waits for countdown
-    if (!this.playerFrozen) this.player?.update(delta)
-    for (const ai of this.aiRacers) ai.update(delta)
+    // Karts frozen during countdown
+    const racing = this.raceManager?.status === 'racing'
+    if (!this.playerFrozen && racing) this.player?.update(delta)
+    if (racing) {
+      for (const ai of this.aiRacers) ai.update(delta)
+    }
 
     if (!this.raceManager) return
 
@@ -129,8 +133,9 @@ export class RaceScene extends Phaser.Scene {
       this.hudLap.setText(`Lap ${Math.min(playerState.lap, 2)}/2`)
     }
 
-    // Race end
-    if (this.raceManager.status === 'finished') {
+    // Race end — guard with raceEnded flag to fire only once
+    if (this.raceManager.status === 'finished' && !this.raceEnded) {
+      this.raceEnded = true
       this.time.addEvent({
         delay: 2000,
         callback: () => {
@@ -138,8 +143,6 @@ export class RaceScene extends Phaser.Scene {
           this.scene.start('ResultsScene', { results, user: this.user })
         },
       })
-      // Freeze everything
-      this.raceManager.status = 'countdown'  // sentinel to prevent re-triggering
     }
   }
 }
