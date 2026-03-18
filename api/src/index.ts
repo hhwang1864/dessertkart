@@ -12,7 +12,12 @@ export interface Env {
 const app = new Hono<{ Bindings: Env }>()
 
 app.use('/*', cors({
-  origin: ['http://localhost:5173', 'https://dessertkart.pages.dev'],
+  origin: (origin) => {
+    if (!origin) return null
+    if (origin === 'http://localhost:5173') return origin
+    if (origin.endsWith('.pages.dev')) return origin
+    return null
+  },
   allowMethods: ['GET', 'POST', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
 }))
