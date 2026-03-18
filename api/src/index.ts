@@ -14,7 +14,7 @@ const app = new Hono<{ Bindings: Env }>()
 app.use('/*', cors({
   origin: (origin) => {
     if (!origin) return null
-    if (origin === 'http://localhost:5173') return origin
+    if (origin.match(/^http:\/\/localhost:\d+$/)) return origin
     if (origin.endsWith('.pages.dev')) return origin
     return null
   },

@@ -39,7 +39,7 @@ export class RaceScene extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor('#c2a05a')
+    this.cameras.main.setBackgroundColor('#d4a574')
 
     // --- Ground layer ---
     const groundMap = this.make.tilemap({ data: GROUND_LAYER, tileWidth: TILE_SIZE, tileHeight: TILE_SIZE })

@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
   GROUND_LAYER,
-  DECOR_LAYER,
   ROAD_TILE_INDICES,
   TRACK_BOUNDS,
   FINISH_LINE,
@@ -17,10 +16,10 @@ describe('GROUND_LAYER', () => {
   })
 
   it('should have road tiles on the top straight', () => {
-    // rows 4-8, cols 4-45 should be road (tile 0)
+    // rows 4-8, cols 4-45 should be road tiles
     for (let r = 4; r <= 8; r++) {
       for (let c = 4; c <= 45; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(0)
+        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
       }
     }
   })
@@ -28,7 +27,7 @@ describe('GROUND_LAYER', () => {
   it('should have road tiles on the bottom straight', () => {
     for (let r = 29; r <= 33; r++) {
       for (let c = 4; c <= 45; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(0)
+        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
       }
     }
   })
@@ -36,7 +35,7 @@ describe('GROUND_LAYER', () => {
   it('should have road tiles on the left straight', () => {
     for (let r = 4; r <= 33; r++) {
       for (let c = 4; c <= 8; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(0)
+        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
       }
     }
   })
@@ -44,25 +43,25 @@ describe('GROUND_LAYER', () => {
   it('should have road tiles on the right straight', () => {
     for (let r = 4; r <= 33; r++) {
       for (let c = 41; c <= 45; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(0)
+        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
       }
     }
   })
 
-  it('should have empty interior (no road in the middle)', () => {
+  it('should have non-road interior (grass in the middle)', () => {
     // Interior: rows 10-28, cols 10-40 — no road tiles
     for (let r = 10; r <= 28; r++) {
       for (let c = 10; c <= 40; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(-1)
+        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(false)
       }
     }
   })
 
-  it('should have empty tiles completely outside the track', () => {
-    // Outside of road_left (col 0-3)
+  it('should have sand tiles outside the track', () => {
+    // Outside of road_left (col 0-3) should be sand, not empty
     for (let r = 0; r < 38; r++) {
       for (let c = 0; c < 4; c++) {
-        expect(GROUND_LAYER[r][c]).toBe(-1)
+        expect(GROUND_LAYER[r][c]).not.toBe(-1)
       }
     }
   })
