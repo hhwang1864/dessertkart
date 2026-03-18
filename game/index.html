@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DessertKart</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        background: #1a1a2e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        font-family: monospace;
+        overflow: hidden;
+      }
+      #game-container {
+        position: relative;
+        display: inline-block;
+      }
+      #login-overlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 100;
+      }
+      #login-overlay.hidden { display: none; }
+      .login-box {
+        background: #2d1b4e;
+        border: 3px solid #c084fc;
+        border-radius: 8px;
+        padding: 32px;
+        min-width: 300px;
+        text-align: center;
+        color: #f3e8ff;
+      }
+      .login-box h2 {
+        font-size: 28px;
+        color: #e879f9;
+        margin-bottom: 8px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .login-box p.subtitle {
+        font-size: 12px;
+        color: #a78bfa;
+        margin-bottom: 24px;
+      }
+      .login-box input {
+        display: block;
+        width: 100%;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        background: #1e1035;
+        border: 2px solid #7c3aed;
+        border-radius: 4px;
+        color: #f3e8ff;
+        font-family: monospace;
+        font-size: 14px;
+        outline: none;
+      }
+      .login-box input:focus { border-color: #c084fc; }
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .btn-row button {
+        flex: 1;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        letter-spacing: 1px;
+        transition: opacity 0.15s;
+      }
+      .btn-row button:hover { opacity: 0.85; }
+      #btn-login {
+        background: #7c3aed;
+        color: white;
+      }
+      #btn-register {
+        background: #059669;
+        color: white;
+      }
+      #login-error {
+        color: #f87171;
+        font-size: 12px;
+        margin-top: 10px;
+        min-height: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="login-overlay" class="hidden">
+        <div class="login-box">
+          <h2>DessertKart</h2>
+          <p class="subtitle">Top-down desert racing</p>
+          <input type="text" id="username" placeholder="Username" autocomplete="off" />
+          <input type="password" id="password" placeholder="Password" autocomplete="off" />
+          <div class="btn-row">
+            <button id="btn-login">LOGIN</button>
+            <button id="btn-register">REGISTER</button>
+          </div>
+          <div id="login-error"></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "dessertkart",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["game", "api"],
+  "scripts": {
+    "dev:game": "npm run dev --workspace=game",
+    "dev:api": "npm run dev --workspace=api",
+    "build:game": "npm run build --workspace=game"
+  }
+}

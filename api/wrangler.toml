@@ -1,0 +1,12 @@
+name = "dessertkart-api"
+main = "src/index.ts"
+compatibility_date = "2024-04-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# JWT_SECRET is set via: echo "secret" | wrangler secret put JWT_SECRET
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dessertkart-db"
+database_id = "placeholder-replace-after-wrangler-d1-create"

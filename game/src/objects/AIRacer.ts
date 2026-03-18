@@ -1,0 +1,83 @@
+import Phaser from 'phaser'
+import { WAYPOINTS } from '../config/waypoints'
+import { isOnRoad } from './Player'
+
+const WAYPOINT_RADIUS   = 32   // pixels — advance to next wp when within this distance
+const TURN_SPEED        = 200  // degrees per second
+const OFF_ROAD_FACTOR   = 0.6
+
+/** Pure helper: returns the heading delta (degrees) needed to steer toward a target. */
+export function steerToward(
+  headingDeg: number,
+  pos: { x: number; y: number },
+  target: { x: number; y: number },
+  _turnSpeed: number,
+  _delta: number,
+): number {
+  const angleRad = Phaser.Math.Angle.BetweenPoints(pos, target)
+  const targetDeg = Phaser.Math.RadToDeg(angleRad)
+  return Phaser.Math.Angle.ShortestBetween(headingDeg, targetDeg)
+}
+
+export class AIRacer extends Phaser.Physics.Arcade.Sprite {
+  private speed: number
+  private heading = -90   // degrees
+  private currentSpeed = 0
+  private waypointIndex: number
+
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    sheet: string,
+    frame: number,
+    speed: number,
+    startWaypointIndex = 0,
+    tint?: number,
+  ) {
+    super(scene, x, y, sheet, frame)
+    this.speed = speed
+    this.waypointIndex = startWaypointIndex
+
+    scene.add.existing(this)
+    scene.physics.add.existing(this)
+    if (tint) this.setTint(tint)
+    this.setDepth(9)
+
+    const body = this.body as Phaser.Physics.Arcade.Body
+    body.setMaxVelocity(speed * 1.1, speed * 1.1)
+  }
+
+  update(delta: number) {
+    const dt = delta / 1000
+    const target = WAYPOINTS[this.waypointIndex]
+
+    // Advance waypoint when close enough
+    const dx = target.x - this.x
+    const dy = target.y - this.y
+    if (Math.sqrt(dx * dx + dy * dy) < WAYPOINT_RADIUS) {
+      this.waypointIndex = (this.waypointIndex + 1) % WAYPOINTS.length
+    }
+
+    // Steer toward current waypoint
+    const diff = steerToward(this.heading, { x: this.x, y: this.y }, target, TURN_SPEED, delta)
+    const maxTurn = TURN_SPEED * dt
+    this.heading += Math.max(-maxTurn, Math.min(maxTurn, diff))
+    this.setAngle(this.heading)
+
+    // Speed with off-road penalty
+    const maxSpeed = isOnRoad(this.x, this.y) ? this.speed : this.speed * OFF_ROAD_FACTOR
+    this.currentSpeed = Math.min(this.currentSpeed + maxSpeed * 2.5 * dt, maxSpeed)
+
+    const rad = Phaser.Math.DegToRad(this.heading)
+    const body = this.body as Phaser.Physics.Arcade.Body
+    body.setVelocity(
+      Math.cos(rad) * this.currentSpeed,
+      Math.sin(rad) * this.currentSpeed,
+    )
+  }
+
+  getCurrentWaypointIndex() {
+    return this.waypointIndex
+  }
+}
