@@ -4,4 +4,5 @@ export interface UserProfile {
   money: number
   owned_carts: string[]
   equipped_cart: string
+  boosts: number
 }

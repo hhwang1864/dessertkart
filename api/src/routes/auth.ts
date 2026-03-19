@@ -17,9 +17,9 @@ auth.post('/register', async (c) => {
 
   try {
     const result = await c.env.DB.prepare(
-      'INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?) RETURNING id, username, money, owned_carts, equipped_cart'
+      'INSERT INTO users (username, password_hash, salt) VALUES (?, ?, ?) RETURNING id, username, money, boosts, owned_carts, equipped_cart'
     ).bind(username.trim(), hash, salt).first<{
-      id: number; username: string; money: number; owned_carts: string; equipped_cart: string
+      id: number; username: string; money: number; boosts: number; owned_carts: string; equipped_cart: string
     }>()
 
     if (!result) throw new Error('Insert failed')
@@ -31,6 +31,7 @@ auth.post('/register', async (c) => {
         id: result.id,
         username: result.username,
         money: result.money,
+        boosts: result.boosts,
         owned_carts: JSON.parse(result.owned_carts),
         equipped_cart: result.equipped_cart,
       },
@@ -53,10 +54,10 @@ auth.post('/login', async (c) => {
   }
 
   const user = await c.env.DB.prepare(
-    'SELECT id, username, password_hash, salt, money, owned_carts, equipped_cart FROM users WHERE username = ?'
+    'SELECT id, username, password_hash, salt, money, boosts, owned_carts, equipped_cart FROM users WHERE username = ?'
   ).bind(username.trim()).first<{
     id: number; username: string; password_hash: string; salt: string;
-    money: number; owned_carts: string; equipped_cart: string
+    money: number; boosts: number; owned_carts: string; equipped_cart: string
   }>()
 
   if (!user) {
@@ -75,6 +76,7 @@ auth.post('/login', async (c) => {
       id: user.id,
       username: user.username,
       money: user.money,
+      boosts: user.boosts,
       owned_carts: JSON.parse(user.owned_carts),
       equipped_cart: user.equipped_cart,
     },

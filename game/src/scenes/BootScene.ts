@@ -33,6 +33,8 @@ export class BootScene extends Phaser.Scene {
     // Sound effects
     this.load.audio('coin-a', '/assets/Sounds/coin-a.ogg')
     this.load.audio('coin-b', '/assets/Sounds/coin-b.ogg')
+    this.load.audio('coin-c', '/assets/Sounds/coin-c.ogg')
+    this.load.audio('coin-d', '/assets/Sounds/coin-d.ogg')
     this.load.audio('select-a', '/assets/Sounds/select-a.ogg')
     this.load.audio('move-a', '/assets/Sounds/move-a.ogg')
     this.load.audio('move-b', '/assets/Sounds/move-b.ogg')
@@ -42,6 +44,7 @@ export class BootScene extends Phaser.Scene {
     this.load.audio('lose-b', '/assets/Sounds/lose-b.ogg')
     this.load.audio('shoot-a', '/assets/Sounds/shoot-a.ogg')
     this.load.audio('error-a', '/assets/Sounds/error-a.ogg')
+    this.load.audio('hurt-a', '/assets/Sounds/hurt-a.ogg')
 
     // Loading progress bar
     const { width, height } = this.scale
@@ -66,6 +69,8 @@ export class BootScene extends Phaser.Scene {
       bar.width = 298 * value
       loadingText.setText(`Loading... ${Math.floor(value * 100)}%`)
     })
+
+    void titleText  // referenced in DOM
   }
 
   create() {

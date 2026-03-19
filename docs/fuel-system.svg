@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="160" viewBox="0 0 400 160">
+  <defs>
+    <style>
+      .title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffcc00; }
+      .label { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
+      .state-label { font-family: Arial, sans-serif; font-size: 11px; font-weight: bold; fill: #ffff00; }
+    </style>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="400" height="160" fill="#0f0f1e"/>
+
+  <!-- Title -->
+  <text x="200" y="26" class="title" text-anchor="middle">FUEL SYSTEM</text>
+
+  <!-- FULL STATE (left) -->
+  <g>
+    <!-- Fuel can icon -->
+    <rect x="20" y="45" width="20" height="24" fill="#4CAF50" stroke="#76FF03" stroke-width="1" rx="2"/>
+    <rect x="23" y="42" width="14" height="6" fill="#4CAF50"/>
+    
+    <!-- Full bar -->
+    <rect x="48" y="48" width="40" height="18" fill="#333" stroke="#666" stroke-width="1" rx="2"/>
+    <rect x="48" y="48" width="40" height="18" fill="#4CAF50" rx="2"/>
+    <text x="70" y="75" class="state-label" text-anchor="middle">FULL</text>
+  </g>
+
+  <!-- LOW STATE (center) -->
+  <g>
+    <!-- Fuel can icon with warning -->
+    <rect x="140" y="45" width="20" height="24" fill="#ff9800" stroke="#ffb74d" stroke-width="1" rx="2"/>
+    <rect x="143" y="42" width="14" height="6" fill="#ff9800"/>
+    <polygon points="150,50 148,55 152,55" fill="#ff4444"/>
+    
+    <!-- Low bar -->
+    <rect x="168" y="48" width="40" height="18" fill="#333" stroke="#666" stroke-width="1" rx="2"/>
+    <rect x="168" y="48" width="16" height="18" fill="#ff9800" rx="2"/>
+    <text x="190" y="75" class="state-label" text-anchor="middle">LOW</text>
+  </g>
+
+  <!-- EMPTY STATE (right) -->
+  <g>
+    <!-- Empty fuel can -->
+    <rect x="260" y="45" width="20" height="24" fill="#555" stroke="#888" stroke-width="1" rx="2"/>
+    <rect x="263" y="42" width="14" height="6" fill="#555"/>
+    
+    <!-- Empty bar -->
+    <rect x="288" y="48" width="40" height="18" fill="#333" stroke="#666" stroke-width="1" rx="2"/>
+    <text x="310" y="75" class="state-label" text-anchor="middle">EMPTY</text>
+    <!-- X mark -->
+    <line x1="298" y1="52" x2="320" y2="62" stroke="#ff4444" stroke-width="2"/>
+    <line x1="320" y1="52" x2="298" y2="62" stroke="#ff4444" stroke-width="2"/>
+  </g>
+
+  <!-- GAS STOP INFO (bottom) -->
+  <g>
+    <!-- Gas pump icon -->
+    <circle cx="65" cy="120" r="8" fill="#4CAF50" stroke="#76FF03" stroke-width="1"/>
+    <rect x="62" y="128" width="6" height="8" fill="#4CAF50"/>
+    
+    <!-- Arrow -->
+    <path d="M 95 120 L 110 120" stroke="#ffff00" stroke-width="2" fill="none" marker-end="url(#arrowYellow)"/>
+    
+    <!-- Refuel info -->
+    <text x="130" y="116" class="label" font-size="13" font-weight="bold">REFUEL</text>
+    <text x="130" y="132" class="label" font-size="11">3 seconds / $5</text>
+  </g>
+
+  <defs>
+    <marker id="arrowYellow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <polygon points="0,0 10,5 0,10" fill="#ffff00"/>
+    </marker>
+  </defs>
+</svg>

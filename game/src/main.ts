@@ -5,6 +5,7 @@ import { MenuScene } from './scenes/MenuScene'
 import { RaceScene } from './scenes/RaceScene'
 import { ResultsScene } from './scenes/ResultsScene'
 import { ShopScene } from './scenes/ShopScene'
+import { ProfileScene } from './scenes/ProfileScene'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -18,7 +19,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, LoginScene, MenuScene, RaceScene, ResultsScene, ShopScene],
+  scene: [BootScene, LoginScene, MenuScene, RaceScene, ResultsScene, ShopScene, ProfileScene],
 }
 
 new Phaser.Game(config)

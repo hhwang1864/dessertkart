@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <defs>
+    <style>
+      .key-box { fill: #333; stroke: #888; stroke-width: 2; }
+      .key-label { font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; fill: #ffff00; }
+      .description { font-family: Arial, sans-serif; font-size: 12px; fill: #ffffff; }
+      .title { font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; fill: #ffcc00; }
+    </style>
+  </defs>
+
+  <!-- Dark purple background -->
+  <rect width="400" height="200" fill="#1a0a2e"/>
+
+  <!-- Title -->
+  <text x="200" y="28" class="title" text-anchor="middle">CONTROLS</text>
+
+  <!-- Direction control cross pattern -->
+  <g>
+    <!-- UP arrow (accelerate) -->
+    <rect x="170" y="55" width="60" height="50" class="key-box" rx="4"/>
+    <polygon points="200,65 210,80 190,80" fill="#ffff00"/>
+    <text x="200" y="108" class="description" text-anchor="middle">Accelerate</text>
+
+    <!-- LEFT arrow (turn left) -->
+    <rect x="105" y="120" width="50" height="60" class="key-box" rx="4"/>
+    <polygon points="125,150 110,140 110,160" fill="#ffff00"/>
+    <text x="130" y="190" class="description" text-anchor="middle">Turn Left</text>
+
+    <!-- DOWN arrow (brake) -->
+    <rect x="170" y="120" width="60" height="50" class="key-box" rx="4"/>
+    <polygon points="200,160 190,145 210,145" fill="#ffff00"/>
+    <text x="200" y="188" class="description" text-anchor="middle">Brake</text>
+
+    <!-- RIGHT arrow (turn right) -->
+    <rect x="245" y="120" width="50" height="60" class="key-box" rx="4"/>
+    <polygon points="275,150 290,140 290,160" fill="#ffff00"/>
+    <text x="270" y="190" class="description" text-anchor="middle">Turn Right</text>
+  </g>
+
+  <!-- SPACE bar for boost -->
+  <g>
+    <rect x="80" y="68" width="240" height="35" class="key-box" rx="4"/>
+    <text x="200" y="91" class="key-label" text-anchor="middle">SPACE</text>
+    <text x="200" y="108" class="description" text-anchor="middle">BOOST (2x speed)</text>
+  </g>
+
+  <!-- Legend -->
+  <text x="20" y="158" class="description" font-size="10">Arrow Keys: Direction</text>
+  <text x="20" y="172" class="description" font-size="10">Space: Double Speed Boost</text>
+</svg>

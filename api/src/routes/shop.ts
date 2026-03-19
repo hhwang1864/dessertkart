@@ -33,13 +33,14 @@ shop.post('/buy', async (c) => {
   owned.push(cartId)
   // WHERE clause includes money check to prevent TOCTOU race (double-purchase)
   const result = await c.env.DB.prepare(
-    'UPDATE users SET money = money - ?, owned_carts = ? WHERE id = ? AND money >= ? RETURNING money, owned_carts, equipped_cart'
-  ).bind(kart.price, JSON.stringify(owned), sub, kart.price).first<{ money: number; owned_carts: string; equipped_cart: string }>()
+    'UPDATE users SET money = money - ?, owned_carts = ? WHERE id = ? AND money >= ? RETURNING money, boosts, owned_carts, equipped_cart'
+  ).bind(kart.price, JSON.stringify(owned), sub, kart.price).first<{ money: number; boosts: number; owned_carts: string; equipped_cart: string }>()
 
   if (!result) return c.json({ error: 'Purchase failed — insufficient funds or concurrent request' }, 402)
 
   return c.json({
     money: result.money,
+    boosts: result.boosts,
     owned_carts: JSON.parse(result.owned_carts),
     equipped_cart: result.equipped_cart,
   })
@@ -66,11 +67,12 @@ shop.post('/equip', async (c) => {
   }
 
   const result = await c.env.DB.prepare(
-    'UPDATE users SET equipped_cart = ? WHERE id = ? RETURNING money, owned_carts, equipped_cart'
-  ).bind(cartId, sub).first<{ money: number; owned_carts: string; equipped_cart: string }>()
+    'UPDATE users SET equipped_cart = ? WHERE id = ? RETURNING money, boosts, owned_carts, equipped_cart'
+  ).bind(cartId, sub).first<{ money: number; boosts: number; owned_carts: string; equipped_cart: string }>()
 
   return c.json({
     money: result!.money,
+    boosts: result!.boosts,
     owned_carts: JSON.parse(result!.owned_carts),
     equipped_cart: result!.equipped_cart,
   })

@@ -96,4 +96,9 @@ export class AIRacer extends Phaser.Physics.Arcade.Sprite {
   getCurrentWaypointIndex() {
     return this.waypointIndex
   }
+
+  /** Called when bumped by another racer. */
+  applyBump() {
+    this.currentSpeed *= 0.3
+  }
 }

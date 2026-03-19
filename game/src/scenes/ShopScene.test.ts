@@ -22,7 +22,7 @@ import type { UserProfile } from '../types'
 
 const mockUser: UserProfile = {
   id: 1, username: 'tester', money: 200,
-  owned_carts: ['default'], equipped_cart: 'default',
+  owned_carts: ['default'], equipped_cart: 'default', boosts: 0,
 }
 
 describe('ShopScene', () => {

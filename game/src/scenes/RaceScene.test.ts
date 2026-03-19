@@ -26,6 +26,7 @@ const mockUser: UserProfile = {
   money: 100,
   owned_carts: ['default'],
   equipped_cart: 'default',
+  boosts: 0,
 }
 
 describe('RaceScene', () => {

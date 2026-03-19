@@ -23,7 +23,7 @@ export class LoginScene extends Phaser.Scene {
     const token = getToken()
     if (token) {
       try {
-        const profile = await apiClient.get('/api/user/profile')
+        const profile = await apiClient.get<UserProfile>('/api/user/profile')
         this.scene.start('MenuScene', { user: profile })
         return
       } catch {
@@ -62,6 +62,7 @@ export class LoginScene extends Phaser.Scene {
     try {
       const data = await apiClient.post<{ token: string; user: UserProfile }>('/api/auth/login', { username, password })
       setToken(data.token)
+
       this.hideOverlay()
       this.scene.start('MenuScene', { user: data.user })
     } catch (err: unknown) {
@@ -84,6 +85,7 @@ export class LoginScene extends Phaser.Scene {
     try {
       const data = await apiClient.post<{ token: string; user: UserProfile }>('/api/auth/register', { username, password })
       setToken(data.token)
+
       this.hideOverlay()
       this.scene.start('MenuScene', { user: data.user })
     } catch (err: unknown) {
