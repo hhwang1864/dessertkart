@@ -55,7 +55,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.boostKey = scene.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
-    this.setAngle(this.heading)
+    this.setAngle(this.heading + 90)
 
     // Fuel
     this.maxFuel = kart.fuelTank
@@ -114,7 +114,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     // Turning
     if (left.isDown)  this.heading -= TURN_SPEED * dt
     if (right.isDown) this.heading += TURN_SPEED * dt
-    this.setAngle(this.heading)
+    this.setAngle(this.heading + 90)
 
     // Boost countdown
     if (this.boostTimeLeft > 0) {

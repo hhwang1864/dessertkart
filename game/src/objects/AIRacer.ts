@@ -79,7 +79,7 @@ export class AIRacer extends Phaser.Physics.Arcade.Sprite {
     const diff = steerToward(this.heading, { x: this.x, y: this.y }, target, TURN_SPEED, delta)
     const maxTurn = TURN_SPEED * dt
     this.heading += Math.max(-maxTurn, Math.min(maxTurn, diff))
-    this.setAngle(this.heading)
+    this.setAngle(this.heading + 90)
 
     // Speed (no off-road penalty needed since walls prevent leaving)
     const maxSpeed = this.speed
