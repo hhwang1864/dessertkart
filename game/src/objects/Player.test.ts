@@ -19,22 +19,24 @@ vi.mock('phaser', () => {
 })
 
 import { isOnRoad } from './Player'
-import { TRACK_BOUNDS } from '../config/trackData'
 
 describe('isOnRoad', () => {
-  it('should return true when position is on road (bottom straight center)', () => {
-    const x = 300
-    const y = TRACK_BOUNDS.roadBottom - 20
-    expect(isOnRoad(x, y)).toBe(true)
+  it('should return true when position is on road (bottom straight)', () => {
+    // Bottom straight center: around pixel (232, 488) → tile (14, 30)
+    expect(isOnRoad(232, 488)).toBe(true)
   })
 
-  it('should return false when position is in the inner grass region', () => {
-    const x = 400
-    const y = 304  // vertical center — inner grass
-    expect(isOnRoad(x, y)).toBe(false)
+  it('should return false when position is in the interior grass region', () => {
+    // Center of the loop: around pixel (400, 288) → tile (25, 18)
+    expect(isOnRoad(400, 288)).toBe(false)
   })
 
   it('should return false when position is completely outside the track', () => {
     expect(isOnRoad(0, 0)).toBe(false)
+  })
+
+  it('should return true on the right straight', () => {
+    // Right straight: around pixel (728, 264) → tile (45, 16)
+    expect(isOnRoad(728, 264)).toBe(true)
   })
 })

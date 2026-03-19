@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { TRACK_BOUNDS } from '../config/trackData'
+import { ROAD_MASK, TILE_SIZE, TRACK_COLS, TRACK_ROWS } from '../config/trackData'
 import type { KartDef } from '../config/karts'
 
 const OFF_ROAD_FACTOR = 0.6   // 60% of max speed when off-road
@@ -7,15 +7,13 @@ const TURN_SPEED      = 180   // degrees per second
 const DRAG            = 0.85  // velocity damping per frame
 
 /**
- * Returns true if (x, y) is on the road surface.
- * On-road = within outer circuit bounds AND not in the inner grass region.
+ * Returns true if (x, y) is on the road surface using the road mask.
  */
 export function isOnRoad(x: number, y: number): boolean {
-  const { roadLeft, roadRight, roadTop, roadBottom, innerLeft, innerRight, innerTop, innerBottom } = TRACK_BOUNDS
-  const withinOuter = x >= roadLeft && x < roadRight && y >= roadTop && y < roadBottom
-  if (!withinOuter) return false
-  const inInner = x >= innerLeft && x < innerRight && y >= innerTop && y < innerBottom
-  return !inInner
+  const col = Math.floor(x / TILE_SIZE)
+  const row = Math.floor(y / TILE_SIZE)
+  if (row < 0 || row >= TRACK_ROWS || col < 0 || col >= TRACK_COLS) return false
+  return ROAD_MASK[row][col]
 }
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -23,6 +21,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private currentSpeed = 0
   private heading = -90  // degrees; -90 = facing up initially
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
+  private lastValidX = 0
+  private lastValidY = 0
 
   constructor(scene: Phaser.Scene, x: number, y: number, kart: KartDef) {
     super(scene, x, y, kart.sheet, kart.spriteFrame)
@@ -38,6 +38,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.cursors = scene.input.keyboard!.createCursorKeys()
     this.setAngle(this.heading)
+
+    // Store initial position as last valid
+    this.lastValidX = x
+    this.lastValidY = y
   }
 
   setKart(kart: KartDef) {
@@ -51,6 +55,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   update(delta: number) {
     const dt = delta / 1000
+
+    // ── Wall collision: push back if off-road ──
+    if (!isOnRoad(this.x, this.y)) {
+      this.setPosition(this.lastValidX, this.lastValidY)
+      this.currentSpeed *= 0.1  // kill most speed on wall hit
+      const body = this.body as Phaser.Physics.Arcade.Body
+      body.setVelocity(0, 0)
+    } else {
+      this.lastValidX = this.x
+      this.lastValidY = this.y
+    }
+
     const { left, right, up, down } = this.cursors
 
     // Turning
@@ -58,9 +74,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (right.isDown) this.heading += TURN_SPEED * dt
     this.setAngle(this.heading)
 
-    const maxSpeed = isOnRoad(this.x, this.y)
-      ? this.kartDef.speed
-      : this.kartDef.speed * OFF_ROAD_FACTOR
+    const maxSpeed = this.kartDef.speed
 
     // Acceleration / braking
     if (up.isDown) {
@@ -70,11 +84,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     } else {
       // Natural deceleration
       this.currentSpeed *= Math.pow(DRAG, delta / 16)
-    }
-
-    // Clamp to off-road max
-    if (!isOnRoad(this.x, this.y)) {
-      this.currentSpeed = Math.min(this.currentSpeed, maxSpeed)
     }
 
     // Apply velocity in heading direction

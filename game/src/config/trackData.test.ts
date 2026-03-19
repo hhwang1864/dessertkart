@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   GROUND_LAYER,
   ROAD_TILE_INDICES,
-  TRACK_BOUNDS,
+  ROAD_MASK,
   FINISH_LINE,
   TRACK_COLS,
   TRACK_ROWS,
@@ -15,55 +15,57 @@ describe('GROUND_LAYER', () => {
     GROUND_LAYER.forEach((row) => expect(row).toHaveLength(50))
   })
 
-  it('should have road tiles on the top straight', () => {
-    // rows 4-8, cols 4-45 should be road tiles
-    for (let r = 4; r <= 8; r++) {
-      for (let c = 4; c <= 45; c++) {
-        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
-      }
-    }
-  })
-
-  it('should have road tiles on the bottom straight', () => {
-    for (let r = 29; r <= 33; r++) {
-      for (let c = 4; c <= 45; c++) {
-        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
-      }
-    }
-  })
-
-  it('should have road tiles on the left straight', () => {
-    for (let r = 4; r <= 33; r++) {
-      for (let c = 4; c <= 8; c++) {
-        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
-      }
-    }
-  })
-
-  it('should have road tiles on the right straight', () => {
-    for (let r = 4; r <= 33; r++) {
-      for (let c = 41; c <= 45; c++) {
-        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
+  it('should have road tiles where ROAD_MASK is true', () => {
+    for (let r = 0; r < 38; r++) {
+      for (let c = 0; c < 50; c++) {
+        if (ROAD_MASK[r][c]) {
+          expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(true)
+        }
       }
     }
   })
 
   it('should have non-road interior (grass in the middle)', () => {
-    // Interior: rows 10-28, cols 10-40 — no road tiles
-    for (let r = 10; r <= 28; r++) {
-      for (let c = 10; c <= 40; c++) {
-        expect(ROAD_TILE_INDICES.has(GROUND_LAYER[r][c])).toBe(false)
+    // Center of the track loop should not be road
+    // Check a region that's clearly interior (around row 18, col 25)
+    for (let r = 15; r <= 20; r++) {
+      for (let c = 20; c <= 30; c++) {
+        expect(ROAD_MASK[r][c]).toBe(false)
       }
     }
   })
 
   it('should have sand tiles outside the track', () => {
-    // Outside of road_left (col 0-3) should be sand, not empty
-    for (let r = 0; r < 38; r++) {
-      for (let c = 0; c < 4; c++) {
+    // Outside corners should be sand, not empty
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 3; c++) {
         expect(GROUND_LAYER[r][c]).not.toBe(-1)
       }
     }
+  })
+})
+
+describe('ROAD_MASK', () => {
+  it('should be 38 rows × 50 cols of booleans', () => {
+    expect(ROAD_MASK).toHaveLength(38)
+    ROAD_MASK.forEach((row) => {
+      expect(row).toHaveLength(50)
+      row.forEach((val) => expect(typeof val).toBe('boolean'))
+    })
+  })
+
+  it('should have road on the bottom straight (around row 30)', () => {
+    // The bottom straight runs around row 30
+    expect(ROAD_MASK[30][14]).toBe(true)
+    expect(ROAD_MASK[30][20]).toBe(true)
+  })
+
+  it('should have road on the right side (around col 45)', () => {
+    expect(ROAD_MASK[16][45]).toBe(true)
+  })
+
+  it('should not have road at (0,0)', () => {
+    expect(ROAD_MASK[0][0]).toBe(false)
   })
 })
 
@@ -77,20 +79,12 @@ describe('ROAD_TILE_INDICES', () => {
   })
 })
 
-describe('TRACK_BOUNDS', () => {
-  it('should compute pixel bounds from tile coords', () => {
-    expect(TRACK_BOUNDS.roadLeft).toBe(4 * 16)
-    expect(TRACK_BOUNDS.roadTop).toBe(4 * 16)
-    expect(TRACK_BOUNDS.innerLeft).toBe((4 + 5) * 16)
-    expect(TRACK_BOUNDS.innerTop).toBe((4 + 5) * 16)
-  })
-})
-
 describe('FINISH_LINE', () => {
-  it('should be on the bottom straight', () => {
-    expect(FINISH_LINE.y).toBeGreaterThanOrEqual(TRACK_BOUNDS.roadBottom - 5 * TILE_SIZE)
-    expect(FINISH_LINE.x).toBeGreaterThan(TRACK_BOUNDS.roadLeft)
-    expect(FINISH_LINE.xEnd).toBeLessThan(TRACK_BOUNDS.roadRight)
+  it('should be on the bottom straight area', () => {
+    // Finish line should be in the lower portion of the track
+    expect(FINISH_LINE.y).toBeGreaterThan(400)
+    expect(FINISH_LINE.x).toBeGreaterThan(0)
+    expect(FINISH_LINE.xEnd).toBeLessThan(800)
   })
 })
 

@@ -4,7 +4,6 @@ import { isOnRoad } from './Player'
 
 const WAYPOINT_RADIUS   = 32   // pixels — advance to next wp when within this distance
 const TURN_SPEED        = 200  // degrees per second
-const OFF_ROAD_FACTOR   = 0.6
 
 /** Pure helper: returns the heading delta (degrees) needed to steer toward a target. */
 export function steerToward(
@@ -24,6 +23,8 @@ export class AIRacer extends Phaser.Physics.Arcade.Sprite {
   private heading = -90   // degrees
   private currentSpeed = 0
   private waypointIndex: number
+  private lastValidX = 0
+  private lastValidY = 0
 
   constructor(
     scene: Phaser.Scene,
@@ -46,10 +47,25 @@ export class AIRacer extends Phaser.Physics.Arcade.Sprite {
 
     const body = this.body as Phaser.Physics.Arcade.Body
     body.setMaxVelocity(speed * 1.1, speed * 1.1)
+
+    this.lastValidX = x
+    this.lastValidY = y
   }
 
   update(delta: number) {
     const dt = delta / 1000
+
+    // ── Wall collision: push back if off-road ──
+    if (!isOnRoad(this.x, this.y)) {
+      this.setPosition(this.lastValidX, this.lastValidY)
+      this.currentSpeed *= 0.3
+      const body = this.body as Phaser.Physics.Arcade.Body
+      body.setVelocity(0, 0)
+    } else {
+      this.lastValidX = this.x
+      this.lastValidY = this.y
+    }
+
     const target = WAYPOINTS[this.waypointIndex]
 
     // Advance waypoint when close enough
@@ -65,8 +81,8 @@ export class AIRacer extends Phaser.Physics.Arcade.Sprite {
     this.heading += Math.max(-maxTurn, Math.min(maxTurn, diff))
     this.setAngle(this.heading)
 
-    // Speed with off-road penalty
-    const maxSpeed = isOnRoad(this.x, this.y) ? this.speed : this.speed * OFF_ROAD_FACTOR
+    // Speed (no off-road penalty needed since walls prevent leaving)
+    const maxSpeed = this.speed
     this.currentSpeed = Math.min(this.currentSpeed + maxSpeed * 2.5 * dt, maxSpeed)
 
     const rad = Phaser.Math.DegToRad(this.heading)

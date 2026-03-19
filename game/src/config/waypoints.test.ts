@@ -1,29 +1,26 @@
 import { describe, it, expect } from 'vitest'
 import { WAYPOINTS, START_POSITIONS, FINISH_WAYPOINT_INDEX } from './waypoints'
-import { TRACK_BOUNDS } from './trackData'
+import { ROAD_MASK, TILE_SIZE } from './trackData'
 
 describe('WAYPOINTS', () => {
   it('should have at least 8 waypoints', () => {
     expect(WAYPOINTS.length).toBeGreaterThanOrEqual(8)
   })
 
-  it('all waypoints should be within road pixel bounds', () => {
+  it('all waypoints should be within the grid bounds', () => {
     for (const wp of WAYPOINTS) {
-      expect(wp.x).toBeGreaterThanOrEqual(TRACK_BOUNDS.roadLeft)
-      expect(wp.x).toBeLessThanOrEqual(TRACK_BOUNDS.roadRight)
-      expect(wp.y).toBeGreaterThanOrEqual(TRACK_BOUNDS.roadTop)
-      expect(wp.y).toBeLessThanOrEqual(TRACK_BOUNDS.roadBottom)
+      expect(wp.x).toBeGreaterThanOrEqual(0)
+      expect(wp.x).toBeLessThanOrEqual(800)
+      expect(wp.y).toBeGreaterThanOrEqual(0)
+      expect(wp.y).toBeLessThanOrEqual(608)
     }
   })
 
-  it('waypoints should NOT be in the inner (grass) region', () => {
+  it('all waypoints should be on road tiles', () => {
     for (const wp of WAYPOINTS) {
-      const inInner =
-        wp.x > TRACK_BOUNDS.innerLeft &&
-        wp.x < TRACK_BOUNDS.innerRight &&
-        wp.y > TRACK_BOUNDS.innerTop &&
-        wp.y < TRACK_BOUNDS.innerBottom
-      expect(inInner).toBe(false)
+      const col = Math.floor(wp.x / TILE_SIZE)
+      const row = Math.floor(wp.y / TILE_SIZE)
+      expect(ROAD_MASK[row]?.[col]).toBe(true)
     }
   })
 })
@@ -33,10 +30,11 @@ describe('START_POSITIONS', () => {
     expect(START_POSITIONS).toHaveLength(4)
   })
 
-  it('all start positions should be on the bottom straight', () => {
+  it('all start positions should be on road tiles', () => {
     for (const pos of START_POSITIONS) {
-      expect(pos.y).toBeGreaterThanOrEqual(TRACK_BOUNDS.roadBottom - 5 * 16)
-      expect(pos.y).toBeLessThanOrEqual(TRACK_BOUNDS.roadBottom)
+      const col = Math.floor(pos.x / TILE_SIZE)
+      const row = Math.floor(pos.y / TILE_SIZE)
+      expect(ROAD_MASK[row]?.[col]).toBe(true)
     }
   })
 })
